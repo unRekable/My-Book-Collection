@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.poetry/
+build/
+dist/
+*.egg-info/
+.coverage
+.pytest_cache/
+nosetests.xml
+coverage.xml
+.benchmarks
+
+# Flask
+instance/
+*.sqlite
+*.db
+celerybeat.pid
+
+# Editors
+.idea/             # PyCharm project files
+.vscode/           # VS Code files
+.DS_Store          # macOS specific
+Thumbs.db          # Windows specific

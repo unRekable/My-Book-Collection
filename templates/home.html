@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="{{ url_for('index') }}">Home (Library)</a>
+            <a href="{{ url_for('add_author') }}">Add Author</a>
+            <a href="{{ url_for('add_book') }}">Add Book</a>
+        </nav>
+
+        <h1>My Book Collection</h1>
+
+        {# Flash Messages Display #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <div class="sort-search-forms">
+            {# Sorting Form #}
+            <div class="sort-form">
+                <form action="{{ url_for('index') }}" method="GET" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                    <label for="sort_by">Sort by:</label>
+                    <select name="sort_by" id="sort_by">
+                        <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+                        <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author Name</option>
+                    </select>
+                    <button type="submit">Sort</button>
+                    {# Preserve search query when sorting #}
+                    {% if search_query %}<input type="hidden" name="search_query" value="{{ search_query }}">{% endif %}
+                </form>
+            </div>
+
+            {# Search Form #}
+            <div class="search-form">
+                <form action="{{ url_for('index') }}" method="GET" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                    <label for="search_query">Search:</label>
+                    <input type="text" id="search_query" name="search_query" placeholder="Enter title or author" value="{{ search_query if search_query else '' }}">
+                    <button type="submit">Search</button>
+                    {# Preserve sort option when searching #}
+                    {% if sort_by %}<input type="hidden" name="sort_by" value="{{ sort_by }}">{% endif %}
+                </form>
+            </div>
+        </div>
+
+        {# Book List #}
+        {% if books %}
+            {% for book in books %}
+                <div class="book-item">
+                    {# Delete Button Form - MOVED TO THE TOP FOR ABSOLUTE POSITIONING #}
+                    <div class="delete-button-form">
+                        <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST">
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete &quot;{{ book.title }}&quot;?');">Delete Book</button>
+                        </form>
+                    </div>
+
+                    {# Add Cover Image #}
+                    {% if book.cover_url %}
+                        <img src="{{ book.cover_url }}" alt="Cover of {{ book.title }}">
+                    {% else %}
+                        <div class="no-cover">No Cover Available</div>
+                    {% endif %}
+
+                    {# New wrapper for book details and (formerly) delete button - now only for book details positioning #}
+                    <div class="book-info-and-actions">
+                        <div class="book-details">
+                            <h3>{{ book.title }}</h3>
+                            <p>Author: <strong>{{ book.author_name }}</strong></p>
+                            <p>ISBN: {{ book.isbn }}</p>
+                            <p>Publication Year: {{ book.publication_year }}</p>
+                        </div>
+                        {# Delete Button Form was here, but moved above for absolute positioning #}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No books found in the library that match your criteria. Add some or try a different search!</p>
+        {% endif %}
+    </div>
+</body>
+</html>

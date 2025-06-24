@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add New Author</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <a href="{{ url_for('index') }}">Home (Library)</a>
+        <a href="{{ url_for('add_author') }}">Add Author</a>
+        <a href="{{ url_for('add_book') }}">Add Book</a>
+      </nav>
+
+      <h1>Add a New Author</h1>
+
+      {# Flash Messages Display #}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              <ul class="flash-messages">
+                  {% for category, message in messages %}
+                      <li class="{{ category }}">{{ message }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      {% endwith %}
+
+      {# Success message after adding an author (optional, flash messages are better) #}
+      {% if name %}
+        <div class="success-message">
+            <p>Successfully added:</p>
+            <ul>
+                <li><strong>Name:</strong> {{ name }}</li>
+                <li><strong>Birthdate:</strong> {{ birthdate }}</li>
+                <li><strong>Date of Death:</strong> {{ date_of_death if date_of_death else 'N/A' }}</li>
+            </ul>
+        </div>
+      {% endif %}
+
+      <form action="/add_author" method="POST">
+        <label for="name">Author Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="birthdate">Birthdate:</label>
+        <input type="date" id="birthdate" name="birthdate" required><br><br>
+        <label for="date_of_death">Date of Death:</label>
+        <input type="date" id="date_of_death" name="date_of_death"><br><br>
+        <input type="submit" value="Add Author">
+      </form>
+    </div>
+  </body>
+</html>
